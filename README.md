@@ -1,13 +1,12 @@
-# SupplySense 360
+# Global Migration Analysis Dashboard
 
-A data-driven supply chain performance and forecasting dashboard built with Python, Streamlit, and Plotly.
+An interactive dashboard for analyzing global migration patterns, population dynamics, and demographic indicators.
 
 ## Features
-- Interactive map visualizations
-- KPI cards for demand, inventory, and lead times
-- Time-series analytics and forecasting
-- Clean data pipeline and documented notebooks
 
-## How to Run
-1. Activate environment:
-clear
+- **Interactive Global Map**: Visualize migration flows across countries
+- **Migration Analytics**: Top immigration/emigration countries analysis
+- **Demographic Correlations**: Explore relationships between migration and population metrics
+- **Advanced Filtering**: Filter by region, migration status, and population range
+- **Data Export**: Download filtered data as CSV
+

@@ -1,7 +1,62 @@
+# Python
 __pycache__/
-.ipynb_checkpoints/
-data/raw/
-data/processed/*.csv
-.env
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# IDE
 .vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Data files (large or sensitive)
+*.csv
+*.xlsx
+*.db
+*.sqlite
+*.pkl
+*.pickle
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints
+
+# Logs
+*.log
+
+# Exceptions (keep these in git)
+!data/raw/supply_raw.csv
