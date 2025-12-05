@@ -1,6 +1,8 @@
 # app.py - Main entry point with multipage navigation
 
 import streamlit as st
+import pandas as pd
+import plotly.express as px
 import time
 
 # Page configuration - MUST be the first Streamlit command
