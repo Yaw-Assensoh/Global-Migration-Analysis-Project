@@ -25,6 +25,7 @@ MANIFEST
 venv/
 env/
 .venv/
+venv_new/
 
 # IDE
 .vscode/
