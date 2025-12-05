@@ -1,4 +1,4 @@
-# pages/2__Migration_Flows.py
+# pages/2_Migration_Flows.py
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -10,7 +10,7 @@ from utils.helpers import create_sidebar_filters
 st.set_page_config(page_title="Migration Flows", page_icon="", layout="wide")
 
 # Title
-st.markdown('<h1 class="main-header">Migration Flows Analysis</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header"> Migration Flows Analysis</h1>', unsafe_allow_html=True)
 
 # Load data
 df, summary = load_data()

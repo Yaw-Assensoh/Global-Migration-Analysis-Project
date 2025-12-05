@@ -1,7 +1,8 @@
-# pages/5_Data_Explorer.py
+# pages/5__Data_Explorer.py
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 from datetime import datetime
 from utils.data_loader import load_data
 
@@ -218,7 +219,7 @@ if df is not None:
         st.markdown("###  Data Quality Report")
         
         # Data completeness
-        st.markdown("####  Data Completeness")
+        st.markdown("#### Data Completeness")
         
         completeness = pd.DataFrame({
             'Column': df.columns,

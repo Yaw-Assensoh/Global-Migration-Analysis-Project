@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from utils.data_loader import load_data
 
 # Page configuration
@@ -75,7 +76,7 @@ if df is not None:
             st.plotly_chart(fig, use_container_width=True)
             
             # Forecast summary
-            st.markdown("####  Forecast Summary")
+            st.markdown("#### Forecast Summary")
             
             summary_data = []
             for _, row in forecast_df.iterrows():
@@ -93,10 +94,10 @@ if df is not None:
             st.dataframe(pd.DataFrame(summary_data), use_container_width=True)
     
     elif forecast_type == "Growth Rate Model":
-        st.markdown("###  Growth Rate Based Forecast")
+        st.markdown("### Growth Rate Based Forecast")
         
         # Calculate growth rates
-        df['Growth_Rate'] = df['Yearly_Change'] / 100
+        df['Growth_Rate'] = df['Yearly Change'] / 100
         
         # Create forecast scenarios
         scenario = st.selectbox(
@@ -189,7 +190,7 @@ if df is not None:
         impact_df = pd.DataFrame(impact_data)
         
         # Show scenario impacts
-        st.markdown(f"####  {selected_scenario} Scenario Impacts")
+        st.markdown(f"#### {selected_scenario} Scenario Impacts")
         
         col1, col2, col3 = st.columns(3)
         
@@ -234,7 +235,7 @@ if df is not None:
             st.plotly_chart(fig, use_container_width=True)
     
     else:  # Migration Impact
-        st.markdown("###  Migration Impact Analysis")
+        st.markdown("### Migration Impact Analysis")
         
         # Calculate migration impacts
         df['Migration_Impact'] = (df['Net_Migrants'] / df['Population']) * 100

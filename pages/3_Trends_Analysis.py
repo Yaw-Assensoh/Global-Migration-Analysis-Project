@@ -7,10 +7,10 @@ from utils.data_loader import load_data
 from utils.visualizations import create_correlation_heatmap
 
 # Page configuration
-st.set_page_config(page_title="Trends Analysis", page_icon="", layout="wide")
+st.set_page_config(page_title="Trends Analysis", layout="wide")
 
 # Title
-st.markdown('<h1 class="main-header"> Demographic Trends & Correlations</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-header">Demographic Trends & Correlations</h1>', unsafe_allow_html=True)
 
 # Load data
 df, summary = load_data()
@@ -49,8 +49,8 @@ if df is not None:
             4. **Urbanization vs Median Age**
             """)
     
-    elif analysis_type == "Scatter Analysis":
-        st.markdown("###  Scatter Plot Analysis")
+    if analysis_type == "Scatter Analysis":
+        st.markdown("### Scatter Plot Analysis")
         
         col1, col2, col3 = st.columns(3)
         
