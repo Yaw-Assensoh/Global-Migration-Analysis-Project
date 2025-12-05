@@ -1,16 +1,3 @@
-
-pandas
-numpy
-jupyterlab
-streamlit
-plotly
-geopandas
-folium
-scikit-learn
-prophet
-pyarrow
-matplotlib
-seaborn
 streamlit==1.28.0
 pandas==2.1.0
 numpy==1.24.0
