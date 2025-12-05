@@ -1,0 +1,51 @@
+{
+    "analysis_date": "2025-12-05",
+    "total_countries": 233,
+    "global_population": 8.229745543,
+    "top_immigration": {
+        "country": "Ukraine",
+        "value": 1702358.0
+    },
+    "top_emigration": {
+        "country": "Brunei",
+        "value": 0.0
+    },
+    "continent_summary": {
+        "Net_Migrants": {
+            "Africa": 748415,
+            "Asia": 3551078,
+            "Europe": 3438509,
+            "North America": 1664904,
+            "Oceania": 154796,
+            "Other": 3404570,
+            "South America": 412924
+        },
+        "Population": {
+            "Africa": 947506331,
+            "Asia": 4454968178,
+            "Europe": 597446180,
+            "North America": 519349430,
+            "Oceania": 42988742,
+            "Other": 1300960678,
+            "South America": 366526004
+        },
+        "Country": {
+            "Africa": 10,
+            "Asia": 17,
+            "Europe": 11,
+            "North America": 3,
+            "Oceania": 3,
+            "Other": 184,
+            "South America": 5
+        },
+        "Migration_per_Capita": {
+            "Africa": 0.7898786272067664,
+            "Asia": 0.7971051325431039,
+            "Europe": 5.7553451927669865,
+            "North America": 3.2057491619852168,
+            "Oceania": 3.60084972944777,
+            "Other": 2.6169661063345377,
+            "South America": 1.1265885516815881
+        }
+    }
+}
