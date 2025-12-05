@@ -5,6 +5,8 @@ import numpy as np
 import plotly.express as px
 from datetime import datetime
 from utils.data_loader import load_data
+from utils.helpers import create_sidebar_filters
+from utils import visualizations, data_loader, helpers
 
 # Page configuration
 st.set_page_config(page_title="Data Explorer", page_icon="", layout="wide")

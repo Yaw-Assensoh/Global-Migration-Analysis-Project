@@ -5,6 +5,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from utils.data_loader import load_data
 from utils.visualizations import create_correlation_heatmap
+from utils.helpers import create_sidebar_filters
+from utils import visualizations, data_loader, helpers
 
 # Page configuration
 st.set_page_config(page_title="Trends Analysis", layout="wide")

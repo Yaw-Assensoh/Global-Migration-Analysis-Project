@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from utils.data_loader import load_data
 from utils.helpers import create_sidebar_filters
+from utils import visualizations, data_loader, helpers  
 
 # Page configuration
 st.set_page_config(page_title="Migration Flows", page_icon="", layout="wide")
