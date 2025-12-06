@@ -3,7 +3,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+from utils.data_loader import load_data
 
 # Page configuration
 st.set_page_config(page_title="Forecasting", page_icon="", layout="wide")
