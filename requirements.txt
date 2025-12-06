@@ -5,12 +5,17 @@ plotly
 matplotlib
 seaborn
 statsmodels
-scikit-lear
+scikit-learn
 scipy
 openpyxl
 xlrd
 folium
-geopandas
-pydeck
 streamlit-folium
+
+# Geospatial dependencies (compatible with Streamlit Cloud)
+geopandas==0.14.0
+shapely==2.0.1
+pyproj==3.6.0
+fiona==1.9.5
+
 
