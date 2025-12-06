@@ -1,4 +1,3 @@
-# Core libraries
 streamlit
 pandas
 numpy
@@ -10,14 +9,11 @@ scikit-learn
 scipy
 openpyxl
 xlrd
-
-# Mapping
 folium
 streamlit-folium
+prophet==1.1.4
+cmdstanpy==1.1.0
 
-# Forecasting
-prophet
-cmdstanpy
 
 
 
