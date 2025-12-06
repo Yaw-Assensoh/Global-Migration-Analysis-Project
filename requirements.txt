@@ -14,8 +14,4 @@ xlrd
 folium
 streamlit-folium
 
-# Streamlit-compatible geospatial stack
-geopandas==0.14.0
-shapely==2.0.1
-pyproj==3.6.0
-fiona==1.9.5
+
