@@ -12,6 +12,7 @@ from utils.helpers import create_sidebar_filters
 from utils import visualizations, data_loader, helpers
 from prophet import Prophet
 from datetime import datetime, timedelta
+import io
 
 # Set page config
 st.set_page_config(
