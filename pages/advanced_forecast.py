@@ -12,7 +12,7 @@ from utils.helpers import create_sidebar_filters
 from utils import visualizations, data_loader, helpers
 from prophet import Prophet
 from datetime import datetime, timedelta
-from pmdarima import auto_arima
+
 
 
 # Set page config
