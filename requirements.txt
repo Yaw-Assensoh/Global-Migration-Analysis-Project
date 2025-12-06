@@ -1,18 +1,19 @@
 streamlit
 pandas
-numpy
+numpy==2.2.6
 plotly
 matplotlib
 seaborn
 statsmodels
 scikit-learn
-scipy
+scipy==1.15.3
 openpyxl
 xlrd
 folium
 streamlit-folium
-prophet
-cmdstanpy
+prophet==1.1.4
+cmdstanpy==1.1.0
+
 
 
 
