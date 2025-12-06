@@ -1,31 +1,42 @@
+# File: streamlit_app.py
 import streamlit as st
 
 st.set_page_config(
-    page_title="Global Migration Analysis",
+    page_title="Migration Dashboard",
     page_icon="🌍",
     layout="wide"
 )
 
-st.title("🌍 Global Migration Analysis Dashboard")
-st.markdown("""
-### Advanced Migration Forecasting & Analysis
+st.title("🌍 Global Migration Dashboard")
+st.markdown("**If you see this, deployment is WORKING!**")
 
-Navigate to different pages using the sidebar:
+# Simple test of imports
+try:
+    import pandas as pd
+    import numpy as np
+    import plotly.graph_objects as go
+    
+    st.success("✅ All imports successful!")
+    
+    # Show versions
+    st.write("**Package versions:**")
+    st.code(f"""
+    Streamlit: {st.__version__}
+    Pandas: {pd.__version__}
+    NumPy: {np.__version__}
+    Plotly: {go.__version__}
+    """)
+    
+    # Create simple chart
+    st.subheader("Sample Migration Chart")
+    data = pd.DataFrame({
+        'Year': range(2000, 2024),
+        'Migration': np.random.randn(24).cumsum() + 100
+    })
+    st.line_chart(data.set_index('Year'))
+    
+except Exception as e:
+    st.error(f"❌ Import failed: {e}")
 
-**📈 Advanced Forecasting** - Multi-model forecasting with Prophet, ARIMA, and ensemble methods
-**🌍 Migration Dashboard** - Interactive visualizations and maps
-**📊 Data Analysis** - Statistical insights and trend analysis
-
----
-
-### Deployment Status:
-✅ Config files ready  
-✅ Requirements optimized  
-✅ Ready for Streamlit Cloud deployment
-
----
-**Note:** The first deployment might take a few minutes as it installs Prophet and other ML packages.
-""")
-
-# Add a success message
-st.success("App configured successfully! Deploy to Streamlit Cloud when ready.")
+st.balloons()
+st.success("🎉 DEPLOYMENT SUCCESSFUL!")
