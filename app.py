@@ -5,9 +5,8 @@ import pandas as pd
 import plotly.express as px
 import time
 from datetime import datetime
-from utils.data_loader import load_data, get_filtered_data
-from utils.helpers import create_sidebar_filters
-from utils import visualizations, data_loader, helpers
+
+
 
 # Page configuration - MUST be the first Streamlit command
 st.set_page_config(
