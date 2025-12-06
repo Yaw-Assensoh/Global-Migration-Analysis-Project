@@ -4,10 +4,11 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from datetime import datetime
-from utils.data_loader import load_data, get_filtered_data  
+from datetime import datetime   
+from utils.data_loader import load_data, get_filtered_data
 from utils.helpers import create_sidebar_filters
 from utils import visualizations, data_loader, helpers
+
 
 # Import from utils
 try:
