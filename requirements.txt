@@ -10,9 +10,7 @@ scipy
 openpyxl
 xlrd
 
-# Mapping 
-folium
-streamlit-folium
+
 
 # Forecasting
 
