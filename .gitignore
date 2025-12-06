@@ -62,4 +62,4 @@ Thumbs.db
 # Exceptions (keep these in git)
 !data/raw/supply_raw.csv
 .streamlit/config.toml
-requirements.txt
+
