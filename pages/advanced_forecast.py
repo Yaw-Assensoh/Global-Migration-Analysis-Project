@@ -13,6 +13,7 @@ from utils import visualizations, data_loader, helpers
 from prophet import Prophet
 from datetime import datetime, timedelta
 import io
+from pmdarima.arima import ARIMA
 
 # Set page config
 st.set_page_config(
