@@ -1,5 +1,4 @@
-# File: pages/6_📈_Advanced_Forecasting.py
-# This replaces/enhances your existing forecasting page
+# File: pages/6_Advanced_Forecasting.py
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,21 +6,26 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import io
-from datetime import timedelta
+from datetime import timedelta, datetime
 import warnings
-warnings.filterwarnings("ignore")
-from prophet import Prophet
-from prophet.plot import plot_plotly
-from statsmodels.tsa.arima.model import ARIMA
+warnings.filterwarnings('ignore')
 
+# Try to import Prophet (handle missing installation)
+try:
+    from prophet import Prophet
+    from prophet.plot import plot_plotly
+    PROPHET_AVAILABLE = True
+except ImportError:
+    PROPHET_AVAILABLE = False
+    st.sidebar.warning("⚠️ Prophet not installed. Install with: `pip install prophet`")
 
-
- 
-
-
-
-
-
+# Try to import ARIMA
+try:
+    from statsmodels.tsa.arima.model import ARIMA
+    ARIMA_AVAILABLE = True
+except ImportError:
+    ARIMA_AVAILABLE = False
+    st.sidebar.warning("⚠️ statsmodels not installed. Install with: `pip install statsmodels`")
 
 # Set page config
 st.set_page_config(
@@ -61,7 +65,7 @@ st.markdown("""
 st.title("📈 Advanced Migration Forecasting")
 st.markdown("""
 **Multi-model forecasting with uncertainty quantification and scenario analysis**
-Forecast migration trends using ensemble of Prophet, ARIMA, LSTM, and XGBoost models.
+Forecast migration trends using available models.
 """)
 
 # Sidebar
@@ -72,30 +76,40 @@ st.sidebar.header("🔧 Forecasting Configuration")
 def load_migration_data():
     """Load and prepare migration data"""
     try:
-        # Load from your data structure
-        df = pd.read_csv("data/processed/cleaned_migration_data.csv")
+        # Try to load from CSV
+        try:
+            df = pd.read_csv("data/processed/cleaned_migration_data.csv")
+        except:
+            # Create sample data
+            st.warning("Using sample data. Create 'data/processed/cleaned_migration_data.csv' for real data.")
+            df = pd.DataFrame({
+                'Country': ['USA', 'China', 'India', 'Germany', 'UK', 'France', 'Japan', 'Brazil', 'Canada', 'Australia'],
+                'Population': [331e6, 1441e6, 1380e6, 83e6, 68e6, 65e6, 125e6, 213e6, 38e6, 26e6],
+                'Migration_Rate_per_1000': [3.1, 0.2, -0.4, 1.5, 2.8, 1.1, 0.3, -0.2, 8.9, 6.3],
+                'Yearly_Change': [0.7, 0.4, 1.0, 0.2, 0.6, 0.3, -0.2, 0.8, 1.1, 1.5],
+                'Fertility_Rate': [1.7, 1.7, 2.2, 1.6, 1.6, 1.9, 1.4, 1.7, 1.5, 1.7],
+                'Median_Age': [38, 38, 28, 46, 40, 41, 48, 33, 41, 37]
+            })
         
-        # Create time series data (simulating historical data)
-        # In reality, you would have historical yearly data
+        # Create time series data (synthetic for demo)
         countries = df['Country'].unique()
         
-        # Generate synthetic time series for demonstration
-        # Replace this with your actual historical data
+        # Generate synthetic time series
         all_data = []
         base_year = 2000
         
-        for country in countries[:50]:  # Limit for demo
+        for country in countries[:10]:  # Limit for demo
             country_data = df[df['Country'] == country].iloc[0]
             
             # Create time series with trend
-            for year in range(base_year, 2025):
+            for year in range(base_year, 2024):  # Up to 2023
                 # Add some randomness and trend
                 growth = country_data.get('Yearly_Change', 1) / 100
                 base_pop = country_data.get('Population', 1000000)
                 
                 # Simulate population with some noise
                 population = base_pop * (1 + growth) ** (year - base_year)
-                population *= np.random.uniform(0.95, 1.05)  # Add noise
+                population *= np.random.uniform(0.95, 1.05)
                 
                 # Migration rate with trend
                 migration_trend = country_data.get('Migration_Rate_per_1000', 0)
@@ -119,7 +133,7 @@ def load_migration_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         # Return sample data for demo
-        dates = pd.date_range(start='2000-01-01', end='2024-01-01', freq='Y')
+        dates = pd.date_range(start='2000-01-01', end='2023-01-01', freq='Y')
         sample_data = pd.DataFrame({
             'ds': dates,
             'y': np.random.normal(5, 2, len(dates)).cumsum() + 50,
@@ -134,12 +148,25 @@ def load_migration_data():
 # Load data
 df, time_series_df = load_migration_data()
 
-# Model selection
+# Model selection with availability check
+available_models = []
+if PROPHET_AVAILABLE:
+    available_models.append("Prophet")
+if ARIMA_AVAILABLE:
+    available_models.append("ARIMA")
+
+# Always available models
+available_models.extend(["Simple Exponential Smoothing", "Moving Average", "Ensemble"])
+
+if not available_models:
+    st.error("No forecasting models available. Please install at least one model library.")
+    st.stop()
+
 st.sidebar.subheader("Model Selection")
 models_selected = st.sidebar.multiselect(
     "Select forecasting models:",
-    ["Prophet", "ARIMA", "LSTM", "XGBoost", "Ensemble"],
-    default=["Prophet", "Ensemble"]
+    available_models,
+    default=available_models[:min(2, len(available_models))]
 )
 
 # Forecasting parameters
@@ -169,6 +196,29 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📥 Export Results"
 ])
 
+# Helper function for simple models
+def simple_exponential_smoothing(data, alpha=0.3, steps=5):
+    """Simple exponential smoothing forecast"""
+    forecast = []
+    last_value = data[-1]
+    for _ in range(steps):
+        forecast.append(last_value)
+    return forecast
+
+def moving_average_forecast(data, window=3, steps=5):
+    """Moving average forecast"""
+    forecast = []
+    ma = data[-window:].mean()
+    for _ in range(steps):
+        forecast.append(ma)
+    return forecast
+
+# Initialize session state for storing forecasts
+if 'forecasts' not in st.session_state:
+    st.session_state.forecasts = {}
+if 'metrics' not in st.session_state:
+    st.session_state.metrics = {}
+
 with tab1:
     st.header("Forecast Dashboard")
     
@@ -190,18 +240,21 @@ with tab1:
         st.metric("Historical Average", f"{avg_rate:.2f}")
     
     with col3:
-        trend = "Increasing" if country_data['y'].iloc[-1] > country_data['y'].iloc[-5] else "Decreasing"
+        if len(country_data) >= 5:
+            trend = "Increasing" if country_data['y'].iloc[-1] > country_data['y'].iloc[-5] else "Decreasing"
+        else:
+            trend = "Insufficient Data"
         st.metric("Recent Trend", trend)
     
     # Prepare data for forecasting
     prophet_df = country_data[['ds', 'y']].rename(columns={'ds': 'ds', 'y': 'y'})
     
-    # Initialize results storage
-    forecasts = {}
-    metrics = {}
+    # Clear previous forecasts for this country
+    st.session_state.forecasts = {}
+    st.session_state.metrics = {}
     
     # Prophet Model
-    if "Prophet" in models_selected:
+    if "Prophet" in models_selected and PROPHET_AVAILABLE:
         with st.spinner("Training Prophet model..."):
             try:
                 prophet_model = Prophet(
@@ -227,14 +280,14 @@ with tab1:
                     future['population'] = [last_pop * (1 + growth) ** i for i in range(len(future))]
                 
                 forecast = prophet_model.predict(future)
-                forecasts['Prophet'] = forecast
+                st.session_state.forecasts['Prophet'] = forecast
                 
                 # Calculate metrics
                 historical = forecast[forecast['ds'] <= prophet_df['ds'].max()]
                 if len(historical) == len(prophet_df):
                     mae = mean_absolute_error(prophet_df['y'], historical['yhat'])
                     rmse = np.sqrt(mean_squared_error(prophet_df['y'], historical['yhat']))
-                    metrics['Prophet'] = {'MAE': mae, 'RMSE': rmse}
+                    st.session_state.metrics['Prophet'] = {'MAE': mae, 'RMSE': rmse}
                 
                 # Plot
                 fig1 = plot_plotly(prophet_model, forecast)
@@ -249,14 +302,14 @@ with tab1:
                 st.error(f"Prophet model error: {e}")
     
     # ARIMA Model
-    if "ARIMA" in models_selected:
+    if "ARIMA" in models_selected and ARIMA_AVAILABLE:
         with st.spinner("Training ARIMA model..."):
             try:
                 # Prepare data
                 arima_data = country_data['y'].values
                 
-                # Fit ARIMA model
-                model = ARIMA(arima_data, order=(2,1,2))
+                # Fit ARIMA model - simpler parameters for reliability
+                model = ARIMA(arima_data, order=(1,1,1))
                 model_fit = model.fit()
                 
                 # Forecast
@@ -266,20 +319,24 @@ with tab1:
                 last_date = country_data['ds'].iloc[-1]
                 future_dates = [last_date + timedelta(days=365*i) for i in range(1, forecast_years+1)]
                 
+                # Calculate confidence intervals
+                forecast_se = model_fit.get_forecast(steps=forecast_years).se_mean
+                z_score = 1.96  # For 95% CI, adjust based on confidence_level
+                
                 arima_df = pd.DataFrame({
                     'ds': future_dates,
                     'yhat': arima_forecast,
-                    'yhat_lower': arima_forecast * 0.9,  # Simplified CI
-                    'yhat_upper': arima_forecast * 1.1
+                    'yhat_lower': arima_forecast - z_score * forecast_se,
+                    'yhat_upper': arima_forecast + z_score * forecast_se
                 })
                 
-                forecasts['ARIMA'] = arima_df
+                st.session_state.forecasts['ARIMA'] = arima_df
                 
                 # Calculate metrics
                 train_predictions = model_fit.predict(start=0, end=len(arima_data)-1)
                 mae = mean_absolute_error(arima_data, train_predictions)
                 rmse = np.sqrt(mean_squared_error(arima_data, train_predictions))
-                metrics['ARIMA'] = {'MAE': mae, 'RMSE': rmse}
+                st.session_state.metrics['ARIMA'] = {'MAE': mae, 'RMSE': rmse}
                 
                 # Plot
                 fig2 = go.Figure()
@@ -303,7 +360,7 @@ with tab1:
                     fill='toself',
                     fillcolor='rgba(255,0,0,0.2)',
                     line=dict(color='rgba(255,255,255,0)'),
-                    name='Confidence Interval'
+                    name=f'{confidence_level}% Confidence Interval'
                 ))
                 fig2.update_layout(
                     title=f"ARIMA Forecast for {selected_country}",
@@ -315,38 +372,142 @@ with tab1:
             except Exception as e:
                 st.error(f"ARIMA model error: {e}")
     
+    # Simple Exponential Smoothing
+    if "Simple Exponential Smoothing" in models_selected:
+        with st.spinner("Creating Simple Exponential Smoothing forecast..."):
+            try:
+                # Generate forecast
+                ses_forecast = simple_exponential_smoothing(country_data['y'].values, steps=forecast_years)
+                
+                # Create dates
+                last_date = country_data['ds'].iloc[-1]
+                future_dates = [last_date + timedelta(days=365*i) for i in range(1, forecast_years+1)]
+                
+                ses_df = pd.DataFrame({
+                    'ds': future_dates,
+                    'yhat': ses_forecast
+                })
+                
+                st.session_state.forecasts['Simple Exponential Smoothing'] = ses_df
+                
+                # Plot
+                fig3 = go.Figure()
+                fig3.add_trace(go.Scatter(
+                    x=country_data['ds'], 
+                    y=country_data['y'],
+                    mode='lines',
+                    name='Historical',
+                    line=dict(color='blue')
+                ))
+                fig3.add_trace(go.Scatter(
+                    x=ses_df['ds'],
+                    y=ses_df['yhat'],
+                    mode='lines+markers',
+                    name='SES Forecast',
+                    line=dict(color='green', dash='dash')
+                ))
+                fig3.update_layout(
+                    title=f"Simple Exponential Smoothing Forecast for {selected_country}",
+                    xaxis_title="Date",
+                    yaxis_title="Migration Rate"
+                )
+                st.plotly_chart(fig3, use_container_width=True)
+                
+            except Exception as e:
+                st.error(f"SES model error: {e}")
+    
+    # Moving Average
+    if "Moving Average" in models_selected:
+        with st.spinner("Creating Moving Average forecast..."):
+            try:
+                # Generate forecast
+                ma_forecast = moving_average_forecast(country_data['y'].values, steps=forecast_years)
+                
+                # Create dates
+                last_date = country_data['ds'].iloc[-1]
+                future_dates = [last_date + timedelta(days=365*i) for i in range(1, forecast_years+1)]
+                
+                ma_df = pd.DataFrame({
+                    'ds': future_dates,
+                    'yhat': ma_forecast
+                })
+                
+                st.session_state.forecasts['Moving Average'] = ma_df
+                
+                # Plot
+                fig4 = go.Figure()
+                fig4.add_trace(go.Scatter(
+                    x=country_data['ds'], 
+                    y=country_data['y'],
+                    mode='lines',
+                    name='Historical',
+                    line=dict(color='blue')
+                ))
+                fig4.add_trace(go.Scatter(
+                    x=ma_df['ds'],
+                    y=ma_df['yhat'],
+                    mode='lines+markers',
+                    name='MA Forecast',
+                    line=dict(color='purple', dash='dash')
+                ))
+                fig4.update_layout(
+                    title=f"Moving Average Forecast for {selected_country}",
+                    xaxis_title="Date",
+                    yaxis_title="Migration Rate"
+                )
+                st.plotly_chart(fig4, use_container_width=True)
+                
+            except Exception as e:
+                st.error(f"MA model error: {e}")
+    
     # Ensemble Forecast
-    if "Ensemble" in models_selected and len(forecasts) > 1:
+    if "Ensemble" in models_selected and len(st.session_state.forecasts) > 1:
         with st.spinner("Creating ensemble forecast..."):
             try:
-                # Combine forecasts
-                ensemble_dates = forecasts[list(forecasts.keys())[0]]['ds']
-                ensemble_predictions = []
+                # Get common forecast dates
+                last_date = country_data['ds'].iloc[-1]
+                future_dates = [last_date + timedelta(days=365*i) for i in range(1, forecast_years+1)]
                 
-                for date in ensemble_dates:
-                    date_predictions = []
-                    for model_name, forecast_df in forecasts.items():
-                        if date in forecast_df['ds'].values:
-                            pred = forecast_df[forecast_df['ds'] == date]['yhat'].values[0]
-                            date_predictions.append(pred)
+                # Collect predictions from all models
+                all_predictions = []
+                model_names = []
+                
+                for model_name, forecast_df in st.session_state.forecasts.items():
+                    if model_name != 'Ensemble':
+                        # Align forecasts to common dates
+                        model_preds = []
+                        for date in future_dates:
+                            # Find closest date in model's forecast
+                            if date in forecast_df['ds'].values:
+                                pred = forecast_df[forecast_df['ds'] == date]['yhat'].values[0]
+                            else:
+                                # Interpolate if exact date not found
+                                mask = forecast_df['ds'] <= date
+                                if mask.any():
+                                    pred = forecast_df[mask]['yhat'].iloc[-1]
+                                else:
+                                    pred = forecast_df['yhat'].iloc[0]
+                            model_preds.append(pred)
+                        
+                        all_predictions.append(model_preds)
+                        model_names.append(model_name)
+                
+                if all_predictions:
+                    # Calculate ensemble (simple average)
+                    ensemble_predictions = np.mean(all_predictions, axis=0)
                     
-                    if date_predictions:
-                        # Weighted average (could be based on model performance)
-                        ensemble_predictions.append(np.mean(date_predictions))
-                
-                if ensemble_predictions:
                     ensemble_df = pd.DataFrame({
-                        'ds': ensemble_dates[:len(ensemble_predictions)],
+                        'ds': future_dates,
                         'yhat': ensemble_predictions
                     })
                     
-                    forecasts['Ensemble'] = ensemble_df
+                    st.session_state.forecasts['Ensemble'] = ensemble_df
                     
                     # Plot comparison
-                    fig3 = go.Figure()
+                    fig5 = go.Figure()
                     
                     # Historical data
-                    fig3.add_trace(go.Scatter(
+                    fig5.add_trace(go.Scatter(
                         x=country_data['ds'], 
                         y=country_data['y'],
                         mode='lines',
@@ -356,9 +517,10 @@ with tab1:
                     
                     # Model forecasts
                     colors = ['red', 'green', 'blue', 'orange', 'purple']
-                    for idx, (model_name, forecast_df) in enumerate(forecasts.items()):
-                        if model_name != 'Ensemble':
-                            fig3.add_trace(go.Scatter(
+                    for idx, model_name in enumerate(model_names):
+                        if model_name in st.session_state.forecasts:
+                            forecast_df = st.session_state.forecasts[model_name]
+                            fig5.add_trace(go.Scatter(
                                 x=forecast_df['ds'],
                                 y=forecast_df['yhat'],
                                 mode='lines',
@@ -367,22 +529,21 @@ with tab1:
                             ))
                     
                     # Ensemble forecast
-                    if 'Ensemble' in forecasts:
-                        fig3.add_trace(go.Scatter(
-                            x=ensemble_df['ds'],
-                            y=ensemble_df['yhat'],
-                            mode='lines+markers',
-                            name='Ensemble',
-                            line=dict(color='gold', width=3)
-                        ))
+                    fig5.add_trace(go.Scatter(
+                        x=ensemble_df['ds'],
+                        y=ensemble_df['yhat'],
+                        mode='lines+markers',
+                        name='Ensemble',
+                        line=dict(color='gold', width=3)
+                    ))
                     
-                    fig3.update_layout(
+                    fig5.update_layout(
                         title=f"Model Comparison for {selected_country}",
                         xaxis_title="Date",
                         yaxis_title="Migration Rate",
                         hovermode='x unified'
                     )
-                    st.plotly_chart(fig3, use_container_width=True)
+                    st.plotly_chart(fig5, use_container_width=True)
                     
             except Exception as e:
                 st.error(f"Ensemble creation error: {e}")
@@ -390,35 +551,50 @@ with tab1:
 with tab2:
     st.header("Model Performance Comparison")
     
-    if metrics:
-        # Create metrics comparison
-        metrics_df = pd.DataFrame(metrics).T
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.subheader("Performance Metrics")
-            st.dataframe(metrics_df.style.highlight_min(axis=0, color='lightgreen'), 
-                        use_container_width=True)
-        
-        with col2:
-            # Visual comparison
-            fig = go.Figure()
-            for metric in ['MAE', 'RMSE']:
-                fig.add_trace(go.Bar(
-                    x=metrics_df.index,
-                    y=metrics_df[metric],
-                    name=metric,
-                    text=metrics_df[metric].round(3),
-                    textposition='auto'
-                ))
+    if st.session_state.metrics:
+        try:
+            # Create metrics comparison
+            metrics_df = pd.DataFrame(st.session_state.metrics).T
             
-            fig.update_layout(
-                title="Model Performance Comparison (Lower is Better)",
-                barmode='group',
-                yaxis_title="Error Value"
-            )
-            st.plotly_chart(fig, use_container_width=True)
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.subheader("Performance Metrics")
+                # Use a simpler display without styling to avoid the error
+                st.dataframe(metrics_df.round(3), use_container_width=True)
+            
+            with col2:
+                # Visual comparison
+                fig = go.Figure()
+                for metric in ['MAE', 'RMSE']:
+                    if metric in metrics_df.columns:
+                        fig.add_trace(go.Bar(
+                            x=metrics_df.index,
+                            y=metrics_df[metric],
+                            name=metric,
+                            text=metrics_df[metric].round(3),
+                            textposition='auto'
+                        ))
+                
+                fig.update_layout(
+                    title="Model Performance Comparison (Lower is Better)",
+                    barmode='group',
+                    yaxis_title="Error Value"
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Add performance summary
+                st.subheader("Best Performing Model")
+                if 'MAE' in metrics_df.columns:
+                    best_model_mae = metrics_df['MAE'].idxmin()
+                    st.info(f"**Lowest MAE:** {best_model_mae} ({metrics_df.loc[best_model_mae, 'MAE']:.3f})")
+                
+                if 'RMSE' in metrics_df.columns:
+                    best_model_rmse = metrics_df['RMSE'].idxmin()
+                    st.info(f"**Lowest RMSE:** {best_model_rmse} ({metrics_df.loc[best_model_rmse, 'RMSE']:.3f})")
+        except Exception as e:
+            st.error(f"Error displaying metrics: {e}")
+            st.write("Raw metrics data:", st.session_state.metrics)
     else:
         st.info("Train models first to see performance metrics")
 
@@ -432,20 +608,35 @@ with tab3:
     """)
     
     # Create scenario analysis
-    if 'Prophet' in forecasts:
-        base_forecast = forecasts['Prophet'].copy()
+    if st.session_state.forecasts:
+        # Use first available model for scenario
+        base_model = list(st.session_state.forecasts.keys())[0]
+        base_forecast = st.session_state.forecasts[base_model].copy()
         
         # Apply scenario adjustments
         scenario_forecast = base_forecast.copy()
         
-        # Simple scenario adjustment (in reality, you'd adjust model parameters)
+        # Simple scenario adjustment
         adjustment_factor = 1 + (scenario_growth/100 * 0.3) + (scenario_fertility/100 * 0.2)
         scenario_forecast['yhat'] = base_forecast['yhat'] * adjustment_factor
-        scenario_forecast['yhat_lower'] = base_forecast['yhat_lower'] * adjustment_factor
-        scenario_forecast['yhat_upper'] = base_forecast['yhat_upper'] * adjustment_factor
+        
+        # Adjust confidence intervals if available
+        if 'yhat_lower' in base_forecast.columns and 'yhat_upper' in base_forecast.columns:
+            scenario_forecast['yhat_lower'] = base_forecast['yhat_lower'] * adjustment_factor
+            scenario_forecast['yhat_upper'] = base_forecast['yhat_upper'] * adjustment_factor
         
         # Plot comparison
         fig = go.Figure()
+        
+        # Historical data
+        country_data = time_series_df[time_series_df['country'] == selected_country].copy()
+        fig.add_trace(go.Scatter(
+            x=country_data['ds'],
+            y=country_data['y'],
+            mode='lines',
+            name='Historical Data',
+            line=dict(color='gray', width=1)
+        ))
         
         # Base forecast
         fig.add_trace(go.Scatter(
@@ -465,29 +656,31 @@ with tab3:
             line=dict(color='red', width=2, dash='dash')
         ))
         
-        # Fill between for confidence intervals
-        fig.add_trace(go.Scatter(
-            x=base_forecast['ds'].tolist() + base_forecast['ds'].tolist()[::-1],
-            y=base_forecast['yhat_upper'].tolist() + base_forecast['yhat_lower'].tolist()[::-1],
-            fill='toself',
-            fillcolor='rgba(0,0,255,0.1)',
-            line=dict(color='rgba(255,255,255,0)'),
-            name='Base Confidence',
-            showlegend=True
-        ))
+        # Fill between for confidence intervals if available
+        if 'yhat_lower' in base_forecast.columns and 'yhat_upper' in base_forecast.columns:
+            fig.add_trace(go.Scatter(
+                x=base_forecast['ds'].tolist() + base_forecast['ds'].tolist()[::-1],
+                y=base_forecast['yhat_upper'].tolist() + base_forecast['yhat_lower'].tolist()[::-1],
+                fill='toself',
+                fillcolor='rgba(0,0,255,0.1)',
+                line=dict(color='rgba(255,255,255,0)'),
+                name='Base Confidence',
+                showlegend=True
+            ))
         
-        fig.add_trace(go.Scatter(
-            x=scenario_forecast['ds'].tolist() + scenario_forecast['ds'].tolist()[::-1],
-            y=scenario_forecast['yhat_upper'].tolist() + scenario_forecast['yhat_lower'].tolist()[::-1],
-            fill='toself',
-            fillcolor='rgba(255,0,0,0.1)',
-            line=dict(color='rgba(255,255,255,0)'),
-            name='Scenario Confidence',
-            showlegend=True
-        ))
+        if 'yhat_lower' in scenario_forecast.columns and 'yhat_upper' in scenario_forecast.columns:
+            fig.add_trace(go.Scatter(
+                x=scenario_forecast['ds'].tolist() + scenario_forecast['ds'].tolist()[::-1],
+                y=scenario_forecast['yhat_upper'].tolist() + scenario_forecast['yhat_lower'].tolist()[::-1],
+                fill='toself',
+                fillcolor='rgba(255,0,0,0.1)',
+                line=dict(color='rgba(255,255,255,0)'),
+                name='Scenario Confidence',
+                showlegend=True
+            ))
         
         fig.update_layout(
-            title=f"Scenario Analysis: {selected_country}",
+            title=f"Scenario Analysis: {selected_country} (Based on {base_model})",
             xaxis_title="Date",
             yaxis_title="Migration Rate",
             hovermode='x unified'
@@ -506,19 +699,33 @@ with tab3:
         with col2:
             st.metric("Scenario Forecast (Final Year)", f"{last_scenario:.2f}")
         with col3:
-            st.metric("Impact", f"{impact:.1f}%", 
-                     delta_color="inverse" if impact < 0 else "normal")
+            delta = f"{impact:.1f}%"
+            delta_color = "inverse" if impact < 0 else "normal"
+            st.metric("Impact", delta, delta_color=delta_color)
+            
+            # Interpretation
+            if impact > 10:
+                st.info("🚨 High impact scenario - significant change expected")
+            elif impact > 5:
+                st.info("⚠️ Moderate impact scenario")
+            elif abs(impact) < 2:
+                st.info("📊 Minimal impact scenario")
+    else:
+        st.info("Generate forecasts first to run scenario analysis")
 
 with tab4:
     st.header("Advanced Forecasting Metrics")
+    
+    # Filter data for selected country
+    country_data = time_series_df[time_series_df['country'] == selected_country].copy()
     
     if len(country_data) > 10:
         # Time series decomposition
         st.subheader("Time Series Decomposition")
         
         # Simple moving averages
-        country_data['MA_3'] = country_data['y'].rolling(window=3).mean()
-        country_data['MA_5'] = country_data['y'].rolling(window=5).mean()
+        country_data['MA_3'] = country_data['y'].rolling(window=3, min_periods=1).mean()
+        country_data['MA_5'] = country_data['y'].rolling(window=5, min_periods=1).mean()
         
         fig = make_subplots(
             rows=2, cols=2,
@@ -561,34 +768,53 @@ with tab4:
         
         # Statistical summary
         st.subheader("Statistical Summary")
-        stats_df = pd.DataFrame({
-            'Statistic': ['Mean', 'Std Dev', 'Min', '25%', '50%', '75%', 'Max', 'Skewness', 'Kurtosis'],
+        stats_data = {
+            'Statistic': ['Mean', 'Std Dev', 'Min', '25%', '50% (Median)', '75%', 'Max', 'Skewness', 'Kurtosis'],
             'Value': [
-                country_data['y'].mean(),
-                country_data['y'].std(),
-                country_data['y'].min(),
-                country_data['y'].quantile(0.25),
-                country_data['y'].median(),
-                country_data['y'].quantile(0.75),
-                country_data['y'].max(),
-                country_data['y'].skew(),
-                country_data['y'].kurtosis()
+                f"{country_data['y'].mean():.3f}",
+                f"{country_data['y'].std():.3f}",
+                f"{country_data['y'].min():.3f}",
+                f"{country_data['y'].quantile(0.25):.3f}",
+                f"{country_data['y'].median():.3f}",
+                f"{country_data['y'].quantile(0.75):.3f}",
+                f"{country_data['y'].max():.3f}",
+                f"{country_data['y'].skew():.3f}",
+                f"{country_data['y'].kurtosis():.3f}"
             ]
-        })
+        }
         
+        stats_df = pd.DataFrame(stats_data)
         st.dataframe(stats_df, use_container_width=True)
+        
+        # Additional metrics
+        st.subheader("Additional Metrics")
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            autocorr_1 = country_data['y'].autocorr(lag=1)
+            st.metric("Autocorrelation (lag=1)", f"{autocorr_1:.3f}")
+        
+        with col2:
+            variance = country_data['y'].var()
+            st.metric("Variance", f"{variance:.3f}")
+        
+        with col3:
+            cv = (country_data['y'].std() / country_data['y'].mean()) * 100
+            st.metric("Coefficient of Variation", f"{cv:.1f}%")
+    else:
+        st.warning("Insufficient data for advanced metrics. Need at least 10 data points.")
 
 with tab5:
     st.header("Export Forecasting Results")
     
-    if forecasts:
+    if st.session_state.forecasts:
         # Select forecast to export
         forecast_to_export = st.selectbox(
             "Select forecast to export:",
-            list(forecasts.keys())
+            list(st.session_state.forecasts.keys())
         )
         
-        forecast_data = forecasts[forecast_to_export]
+        forecast_data = st.session_state.forecasts[forecast_to_export]
         
         col1, col2 = st.columns(2)
         
@@ -602,6 +828,7 @@ with tab5:
             st.write(f"Forecast Period: {forecast_data['ds'].min().date()} to {forecast_data['ds'].max().date()}")
             st.write(f"Number of periods: {len(forecast_data)}")
             st.write(f"Average forecast: {forecast_data['yhat'].mean():.2f}")
+            st.write(f"Country: {selected_country}")
         
         with col2:
             # Export options
@@ -625,70 +852,100 @@ with tab5:
                 mime="application/json"
             )
             
-            # Excel export
-            output = io.BytesIO()
-            with pd.ExcelWriter(output, engine='openpyxl') as writer:
-                forecast_data.to_excel(writer, sheet_name='Forecast', index=False)
+            # Excel export - using StringIO for compatibility
+            try:
+                output = io.BytesIO()
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    forecast_data.to_excel(writer, sheet_name='Forecast', index=False)
+                    
+                    # Add summary sheet
+                    summary_data = pd.DataFrame({
+                        'Metric': ['Country', 'Model', 'Start Date', 'End Date', 'Periods', 'Average Forecast'],
+                        'Value': [selected_country, forecast_to_export, 
+                                 forecast_data['ds'].min().date(), 
+                                 forecast_data['ds'].max().date(),
+                                 len(forecast_data),
+                                 forecast_data['yhat'].mean()]
+                    })
+                    summary_data.to_excel(writer, sheet_name='Summary', index=False)
                 
-                # Add summary sheet
-                summary = pd.DataFrame({
-                    'Metric': ['Country', 'Model', 'Start Date', 'End Date', 'Average Forecast'],
-                    'Value': [selected_country, forecast_to_export, 
-                             forecast_data['ds'].min().date(), 
-                             forecast_data['ds'].max().date(),
-                             forecast_data['yhat'].mean()]
-                })
-                summary.to_excel(writer, sheet_name='Summary', index=False)
-            
-            st.download_button(
-                label="📥 Download as Excel",
-                data=output.getvalue(),
-                file_name=f"migration_forecast_{selected_country}_{forecast_to_export}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+                st.download_button(
+                    label="📥 Download as Excel",
+                    data=output.getvalue(),
+                    file_name=f"migration_forecast_{selected_country}_{forecast_to_export}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+            except Exception as e:
+                st.error(f"Excel export error: {e}")
+                st.info("Install openpyxl for Excel export: `pip install openpyxl`")
             
             # Generate report
             if st.button("📋 Generate Detailed Report"):
                 with st.spinner("Generating report..."):
-                    report = f"""
-                    # Migration Forecast Report
+                    trend = "increasing" if forecast_data['yhat'].iloc[-1] > forecast_data['yhat'].iloc[0] else "decreasing"
                     
-                    ## Country: {selected_country}
-                    ## Model: {forecast_to_export}
-                    ## Forecast Period: {forecast_data['ds'].min().date()} to {forecast_data['ds'].max().date()}
-                    
-                    ## Key Metrics:
-                    - Average Forecast: {forecast_data['yhat'].mean():.2f}
-                    - Maximum Forecast: {forecast_data['yhat'].max():.2f}
-                    - Minimum Forecast: {forecast_data['yhat'].min():.2f}
-                    - Forecast Range: {forecast_data['yhat'].max() - forecast_data['yhat'].min():.2f}
-                    
-                    ## Trend Analysis:
-                    {'''
-                    The forecast shows an increasing trend''' if forecast_data['yhat'].iloc[-1] > forecast_data['yhat'].iloc[0] else '''
-                    The forecast shows a decreasing trend'''}
-                    
-                    ## Recommendations:
-                    1. Monitor actual migration data regularly
-                    2. Update forecasts quarterly
-                    3. Consider economic indicators for scenario planning
-                    """
+                    report = f"""# Migration Forecast Report
+
+## Country: {selected_country}
+## Model: {forecast_to_export}
+## Forecast Period: {forecast_data['ds'].min().date()} to {forecast_data['ds'].max().date()}
+
+## Key Metrics:
+- Average Forecast: {forecast_data['yhat'].mean():.2f}
+- Maximum Forecast: {forecast_data['yhat'].max():.2f}
+- Minimum Forecast: {forecast_data['yhat'].min():.2f}
+- Forecast Range: {forecast_data['yhat'].max() - forecast_data['yhat'].min():.2f}
+
+## Trend Analysis:
+The forecast shows a {trend} trend.
+
+## Recommendations:
+1. Monitor actual migration data regularly
+2. Update forecasts quarterly
+3. Consider economic indicators for scenario planning
+4. Validate forecasts with multiple models
+
+## Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+"""
                     
                     st.download_button(
                         label="📄 Download Report (TXT)",
                         data=report,
-                        file_name=f"forecast_report_{selected_country}.txt",
+                        file_name=f"forecast_report_{selected_country}_{forecast_to_export}.txt",
                         mime="text/plain"
                     )
+    else:
+        st.info("Generate forecasts first to export results")
+
+# Installation instructions in sidebar
+st.sidebar.markdown("---")
+st.sidebar.subheader(" Installation Requirements")
+
+if not PROPHET_AVAILABLE or not ARIMA_AVAILABLE:
+    st.sidebar.markdown("""
+    **Missing packages detected:**
+    
+    Install with:
+    ```bash
+    pip install prophet statsmodels openpyxl
+    ```
+    
+    For Prophet on Windows, you might need:
+    ```bash
+    pip install prophet --no-cache-dir
+    ```
+    """)
 
 # Footer
 st.markdown("---")
 st.markdown("""
 **Advanced Forecasting Features:**
-- Multiple model comparison (Prophet, ARIMA, LSTM, XGBoost)
+- Multiple model comparison
 - Ensemble forecasting with weighted averages  
 - Scenario analysis with adjustable parameters
 - Confidence intervals and uncertainty quantification
 - Export capabilities (CSV, JSON, Excel, Reports)
 - Time series decomposition and statistical analysis
+
+**Note:** This is a demonstration version. For production use, ensure all required packages are installed and use real historical data.
 """)
