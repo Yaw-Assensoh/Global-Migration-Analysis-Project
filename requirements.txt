@@ -13,5 +13,6 @@ xlrd
 # Mapping and geospatial
 folium
 streamlit-folium
-prophet==1.1.5
+prophet==1.1.6
+pystan==3.7.0
 
