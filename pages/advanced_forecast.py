@@ -1,6 +1,6 @@
 # File: pages/6_📈_Advanced_Forecasting.py
 # This replaces/enhances your existing forecasting page
-
+import io
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -12,8 +12,7 @@ from utils.helpers import create_sidebar_filters
 from utils import visualizations, data_loader, helpers
 from prophet import Prophet
 from datetime import datetime, timedelta
-import io
-from pmdarima.arima import ARIMA
+
 
 # Set page config
 st.set_page_config(
