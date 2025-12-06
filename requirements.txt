@@ -15,7 +15,7 @@ folium
 streamlit-folium
 
 # Forecasting
-pystan==3.7.0
-prophet==1.1.4
+pystan
+prophet
 
 
