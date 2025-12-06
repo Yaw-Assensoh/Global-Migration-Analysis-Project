@@ -13,6 +13,5 @@ xlrd
 # Mapping and geospatial
 folium
 streamlit-folium
-prophet
-pystan
+
 
