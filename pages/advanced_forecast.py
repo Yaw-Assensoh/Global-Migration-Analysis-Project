@@ -12,7 +12,6 @@ from utils.helpers import create_sidebar_filters
 from utils import visualizations, data_loader, helpers
 from prophet import Prophet
 from datetime import datetime, timedelta
-from statsmodels.tsa.arima.model import ARIMA
 from pmdarima import auto_arima
 
 
