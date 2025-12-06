@@ -6,21 +6,10 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import plotly.express as px
-from prophet import Prophet
-from prophet.plot import plot_plotly
-from sklearn.metrics import mean_absolute_error, mean_squared_error
-from statsmodels.tsa.arima.model import ARIMA
-from sklearn.preprocessing import MinMaxScaler
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Dropout
-import warnings
-warnings.filterwarnings('ignore')
-import json
-from datetime import datetime, timedelta
-import io
+from plotly.graph_objects import Figure
+from utils.data_loader import load_data
+from utils.helpers import create_sidebar_filters
+from utils import visualizations, data_loader, helpers
 
 # Set page config
 st.set_page_config(
