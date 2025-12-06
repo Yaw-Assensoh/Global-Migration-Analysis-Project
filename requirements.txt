@@ -13,5 +13,5 @@ xlrd
 # Mapping and geospatial
 folium
 streamlit-folium
-
+prophet==1.1.5
 
