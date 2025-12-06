@@ -10,7 +10,7 @@ from plotly.graph_objects import Figure
 from utils.data_loader import load_data
 from utils.helpers import create_sidebar_filters
 from utils import visualizations, data_loader, helpers
-from statsmodels.tsa.arima.model import ARIMA
+from prophet import Prophet
 from datetime import datetime, timedelta
 
 # Set page config
