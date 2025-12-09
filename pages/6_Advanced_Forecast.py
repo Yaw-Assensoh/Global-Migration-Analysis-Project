@@ -929,11 +929,6 @@ if not PROPHET_AVAILABLE or not ARIMA_AVAILABLE:
     ```bash
     pip install prophet statsmodels openpyxl
     ```
-    
-    For Prophet on Windows, you might need:
-    ```bash
-    pip install prophet --no-cache-dir
-    ```
     """)
 
 # Footer
@@ -945,4 +940,4 @@ st.markdown("""
 - Scenario analysis with adjustable parameters
 - Confidence intervals and uncertainty quantification
 - Export capabilities (CSV, JSON, Excel, Reports)
-- Time series decomposition and statistical analysis""")
+- Time series decomposition and statistical analysis """)
