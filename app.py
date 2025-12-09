@@ -6,15 +6,19 @@ import time
 # Page configuration - MUST be the first Streamlit command
 st.set_page_config(
     page_title="Global Migration Analytics",
-    page_icon="",
+    page_icon="🌍",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for the entire app
+# Custom CSS for the entire app - UPDATED FOR WHITE BACKGROUND
 st.markdown("""
 <style>
-    /* Main styling */
+    /* Main styling - WHITE BACKGROUND */
+    html, body, [class*="css"]  {
+        background-color: #FFFFFF !important;
+    }
+    
     .main-header {
         font-size: 2.8rem;
         color: #1E3A8A;
@@ -22,6 +26,7 @@ st.markdown("""
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
         border-bottom: 3px solid #3B82F6;
+        background-color: #FFFFFF;
     }
     
     /* Page navigation */
@@ -30,10 +35,11 @@ st.markdown("""
         margin: 0.25rem 0;
         border-radius: 5px;
         transition: all 0.3s ease;
+        background-color: #FFFFFF;
     }
     
     .page-link:hover {
-        background-color: #EFF6FF;
+        background-color: #F8FAFC;
     }
     
     /* Metrics styling */
@@ -68,11 +74,15 @@ st.markdown("""
     /* Button styling */
     .stButton > button {
         transition: all 0.3s ease;
+        background-color: #3B82F6;
+        color: white;
+        border: none;
     }
     
     .stButton > button:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        background-color: #2563EB;
     }
     
     /* Card content */
@@ -94,6 +104,39 @@ st.markdown("""
         line-height: 1.4;
         margin-bottom: 1rem;
     }
+    
+    /* Main container styling for white background */
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        background-color: #FFFFFF;
+    }
+    
+    /* Update introduction section for white theme */
+    .intro-section {
+        color: #1F2937;
+        font-size: 1.2rem;
+        line-height: 1.7;
+        font-weight: 700;
+        background-color: #FFFFFF;
+        border: 2px solid #3B82F6;
+        padding: 1.5rem 1.8rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border-left: 5px solid #3B82F6;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Streamlit containers and columns background */
+    .stContainer, .column, div[data-testid="column"] {
+        background-color: #FFFFFF;
+    }
+    
+    /* Borders and separators */
+    hr {
+        border-color: #E2E8F0;
+        margin: 2rem 0;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -107,23 +150,13 @@ def show_home_page():
     """Main landing page for the app"""
     
     # Header section
-    st.markdown('<h1 class="main-header"> Global Migration Analytics Platform</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🌍 Global Migration Analytics Platform</h1>', unsafe_allow_html=True)
     
-    # Introduction
+    # Introduction - UPDATED FOR WHITE BACKGROUND
     col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
         st.markdown("""
-        <div style="
-            color: #f8fafc;
-            font-size: 1.2rem;
-            line-height: 1.7;
-            font-weight: 700;
-            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
-            padding: 1.5rem 1.8rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-            border-left: 5px solid #3B82F6;
-        ">
+        <div class="intro-section">
         A comprehensive platform for analyzing global migration patterns,
         population dynamics, and demographic indicators across 233 countries
         and territories. Explore interactive visualizations, insights,
@@ -148,7 +181,7 @@ def show_home_page():
     with col1:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon">📊</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Dashboard Overview</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Interactive dashboard with key metrics, filters, and global migration insights across all countries.</div>', unsafe_allow_html=True)
             
@@ -160,7 +193,7 @@ def show_home_page():
     with col2:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon">🗺️</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Migration Flows</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Analyze migration patterns, corridors, and country-level flows with interactive maps and charts.</div>', unsafe_allow_html=True)
             
@@ -172,7 +205,7 @@ def show_home_page():
     with col3:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon">📈</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Trends Analysis</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Explore demographic trends, correlations, and regional patterns over time with advanced analytics.</div>', unsafe_allow_html=True)
             
@@ -186,7 +219,7 @@ def show_home_page():
     with col4:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon">🔮</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Forecasting</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Predictive models and migration scenario simulations using advanced machine learning algorithms.</div>', unsafe_allow_html=True)
             
@@ -198,7 +231,7 @@ def show_home_page():
     with col5:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon">🔍</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Data Explorer</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Interactive data table with filtering, sorting, and export capabilities for raw data analysis.</div>', unsafe_allow_html=True)
             
@@ -210,7 +243,7 @@ def show_home_page():
     with col6:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon">📚</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Methodology</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Learn about our data sources, calculation methods, and analytical approaches.</div>', unsafe_allow_html=True)
             
@@ -221,7 +254,7 @@ def show_home_page():
     
     # Quick Stats Section
     st.markdown("---")
-    st.markdown("###  Quick Statistics")
+    st.markdown("### Quick Statistics")
     
     stats_col1, stats_col2, stats_col3, stats_col4 = st.columns(4)
     
@@ -281,7 +314,7 @@ def show_home_page():
     
     with update_col1:
         with st.container(border=True):
-            st.markdown("####  New Features")
+            st.markdown("#### New Features")
             st.markdown("""
             - **Interactive Choropleth Maps**: Visualize migration flows geographically
             - **Predictive Analytics Module**: Forecast migration trends up to 2030
@@ -291,7 +324,7 @@ def show_home_page():
     
     with update_col2:
         with st.container(border=True):
-            st.markdown("####  Latest Insights")
+            st.markdown("#### Latest Insights")
             st.markdown("""
             - **US immigration increased** by 15% in 2024
             - **India remains top source** of global migrants
@@ -306,7 +339,8 @@ def show_home_page():
         text-align: center; 
         color: #64748B; 
         padding: 1.5rem;
-        background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+        background-color: #F8FAFC;
+        border: 1px solid #E2E8F0;
         border-radius: 0.5rem;
         margin-top: 2rem;
     ">
@@ -371,7 +405,7 @@ def main():
             # Show page-specific content
             if st.session_state.current_page == "overview":
                 st.markdown("""
-                ###  Dashboard Overview
+                ### Dashboard Overview
                 This is where the interactive dashboard would be displayed.
                 
                 **Key Features:**
@@ -383,7 +417,7 @@ def main():
                 
             elif st.session_state.current_page == "migration":
                 st.markdown("""
-                ###  Migration Flows
+                ### Migration Flows
                 This is where migration flow analysis would be displayed.
                 
                 **Key Features:**
@@ -395,7 +429,7 @@ def main():
                 
             elif st.session_state.current_page == "trends":
                 st.markdown("""
-                ###  Trends Analysis
+                ### Trends Analysis
                 This is where trend analysis would be displayed.
                 
                 **Key Features:**
@@ -407,7 +441,7 @@ def main():
                 
             elif st.session_state.current_page == "forecasting":
                 st.markdown("""
-                ###  Forecasting
+                ### Forecasting
                 This is where forecasting models would be displayed.
                 
                 **Key Features:**
@@ -419,7 +453,7 @@ def main():
                 
             elif st.session_state.current_page == "explorer":
                 st.markdown("""
-                ###  Data Explorer
+                ### Data Explorer
                 This is where the data explorer would be displayed.
                 
                 **Key Features:**
@@ -431,7 +465,7 @@ def main():
                 
             elif st.session_state.current_page == "methodology":
                 st.markdown("""
-                ###  Methodology
+                ### Methodology
                 This is where methodology documentation would be displayed.
                 
                 **Key Features:**
