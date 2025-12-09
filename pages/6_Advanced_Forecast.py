@@ -62,14 +62,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title
-st.title("📈 Advanced Migration Forecasting")
+st.title(" Advanced Migration Forecasting")
 st.markdown("""
 **Multi-model forecasting with uncertainty quantification and scenario analysis**
 Forecast migration trends using available models.
 """)
 
 # Sidebar
-st.sidebar.header("🔧 Forecasting Configuration")
+st.sidebar.header(" Forecasting Configuration")
 
 # Load data function
 @st.cache_data
@@ -189,11 +189,11 @@ scenario_fertility = st.sidebar.slider("Fertility Rate Adjustment (%):", -30, 30
 
 # Main content
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📊 Forecast Dashboard", 
-    "🤖 Model Comparison", 
-    "🎯 Scenario Analysis", 
-    "📈 Advanced Metrics",
-    "📥 Export Results"
+    " Forecast Dashboard", 
+    " Model Comparison", 
+    " Scenario Analysis", 
+    " Advanced Metrics",
+    " Export Results"
 ])
 
 # Helper function for simple models
