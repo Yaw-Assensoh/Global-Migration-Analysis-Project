@@ -940,4 +940,7 @@ st.markdown("""
 - Scenario analysis with adjustable parameters
 - Confidence intervals and uncertainty quantification
 - Export capabilities (CSV, JSON, Excel, Reports)
-- Time series decomposition and statistical analysis """)
+- Time series decomposition and statistical analysis 
+            
+*** Note: This app is designed for educational purposes and may not reflect real-world data accurately.
+""")
