@@ -945,7 +945,4 @@ st.markdown("""
 - Scenario analysis with adjustable parameters
 - Confidence intervals and uncertainty quantification
 - Export capabilities (CSV, JSON, Excel, Reports)
-- Time series decomposition and statistical analysis
-
-**Note:** This is a demonstration version. For production use, ensure all required packages are installed and use real historical data.
-""")
+- Time series decomposition and statistical analysis""")
