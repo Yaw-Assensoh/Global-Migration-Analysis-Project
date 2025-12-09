@@ -6,7 +6,7 @@ import time
 # Page configuration - MUST be the first Streamlit command
 st.set_page_config(
     page_title="Global Migration Analytics",
-    page_icon="🌍",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -150,7 +150,7 @@ def show_home_page():
     """Main landing page for the app"""
     
     # Header section
-    st.markdown('<h1 class="main-header">🌍 Global Migration Analytics Platform</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header"> Global Migration Analytics Platform</h1>', unsafe_allow_html=True)
     
     # Introduction - UPDATED FOR WHITE BACKGROUND
     col1, col2, col3 = st.columns([2, 1, 1])
@@ -181,7 +181,7 @@ def show_home_page():
     with col1:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon">📊</div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Dashboard Overview</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Interactive dashboard with key metrics, filters, and global migration insights across all countries.</div>', unsafe_allow_html=True)
             
@@ -193,7 +193,7 @@ def show_home_page():
     with col2:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon">🗺️</div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Migration Flows</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Analyze migration patterns, corridors, and country-level flows with interactive maps and charts.</div>', unsafe_allow_html=True)
             
@@ -205,7 +205,7 @@ def show_home_page():
     with col3:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon">📈</div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Trends Analysis</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Explore demographic trends, correlations, and regional patterns over time with advanced analytics.</div>', unsafe_allow_html=True)
             
@@ -219,7 +219,7 @@ def show_home_page():
     with col4:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon">🔮</div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Forecasting</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Predictive models and migration scenario simulations using advanced machine learning algorithms.</div>', unsafe_allow_html=True)
             
@@ -231,7 +231,7 @@ def show_home_page():
     with col5:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon">🔍</div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Data Explorer</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Interactive data table with filtering, sorting, and export capabilities for raw data analysis.</div>', unsafe_allow_html=True)
             
@@ -243,7 +243,7 @@ def show_home_page():
     with col6:
         container = st.container(border=True)
         with container:
-            st.markdown('<div class="card-icon">📚</div>', unsafe_allow_html=True)
+            st.markdown('<div class="card-icon"></div>', unsafe_allow_html=True)
             st.markdown('<div class="card-title">Methodology</div>', unsafe_allow_html=True)
             st.markdown('<div class="card-description">Learn about our data sources, calculation methods, and analytical approaches.</div>', unsafe_allow_html=True)
             
