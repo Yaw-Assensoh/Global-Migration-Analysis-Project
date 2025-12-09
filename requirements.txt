@@ -6,13 +6,13 @@ matplotlib
 seaborn
 statsmodels
 scikit-learn
-scipy==1.10.1
+scipy
 openpyxl
 xlrd
 folium
 streamlit-folium
-prophet==1.1.4
-cmdstanpy==1.1.0
+prophet
+cmdstanpy
 
 
 
