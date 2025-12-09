@@ -13,7 +13,6 @@ folium
 streamlit-folium
 prophet
 cmdstanpy
-streamlit-option-menu
 
 
 
