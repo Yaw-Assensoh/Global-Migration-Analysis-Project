@@ -1,0 +1,20 @@
+{
+  "models_trained": [
+    "ARIMA",
+    "Prophet",
+    "Linear",
+    "Ensemble"
+  ],
+  "countries_available": [
+    "United States",
+    "Germany",
+    "India"
+  ],
+  "forecast_horizon": 5,
+  "last_updated": "2025-12-15T10:52:27.597709",
+  "performance_metrics": {
+    "mae": 0.78,
+    "rmse": 1.05,
+    "coverage_95%": 0.93
+  }
+}
