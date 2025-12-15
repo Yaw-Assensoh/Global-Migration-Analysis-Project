@@ -1,4 +1,3 @@
-# ==================== CELL 11: STREAMLIT DASHBOARD INTEGRATION CODE ====================
 # Generate code for integrating these forecasts into your Streamlit dashboard
 
 
