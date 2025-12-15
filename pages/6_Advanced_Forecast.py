@@ -114,7 +114,7 @@ with st.sidebar:
         scenario_adjustment = st.slider("Scenario Adjustment (%)", -30, 30, 0, 5)
     
     st.markdown("---")
-    generate_forecast = st.button("🚀 Generate Forecast", type="primary", use_container_width=True)
+    generate_forecast = st.button(" Generate Forecast", type="primary", use_container_width=True)
     
     # Info section
     st.caption("""
