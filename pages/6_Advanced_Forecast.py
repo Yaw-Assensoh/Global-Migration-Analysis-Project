@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 # ==================== PAGE CONFIGURATION ====================
 st.set_page_config(
     page_title="Migration Forecasting Dashboard",
-    page_icon="📈",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -69,10 +69,10 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # ==================== SIDEBAR CONFIGURATION ====================
 with st.sidebar:
-    st.markdown("### ⚙️ Forecast Settings")
+    st.markdown("###  Forecast Settings")
     
     # Country selection with enhanced data
-    st.markdown("**🌍 Select Country**")
+    st.markdown("**Select Country**")
     countries = {
         "🇺🇸 United States": {"code": "USA", "trend": "↑", "volatility": "Low"},
         "🇩🇪 Germany": {"code": "DEU", "trend": "↑", "volatility": "Medium"},
@@ -100,7 +100,7 @@ with st.sidebar:
     )
     
     # Model selection
-    st.markdown("**🤖 Select Models**")
+    st.markdown("** Select Models**")
     col1, col2 = st.columns(2)
     with col1:
         use_prophet = st.checkbox("Prophet", value=True)
@@ -109,7 +109,7 @@ with st.sidebar:
     use_ensemble = st.checkbox("Ensemble", value=True)
     
     # Advanced settings in expander
-    with st.expander("⚙️ Advanced Settings"):
+    with st.expander(" Advanced Settings"):
         show_uncertainty = st.checkbox("Show Uncertainty Bands", value=True)
         scenario_adjustment = st.slider("Scenario Adjustment (%)", -30, 30, 0, 5)
     
@@ -131,7 +131,7 @@ if generate_forecast:
     status_text = st.empty()
     
     # Simulate data loading
-    status_text.text("📊 Loading historical data...")
+    status_text.text("Loading historical data...")
     progress_bar.progress(25)
     
     # Generate realistic historical data
@@ -156,7 +156,7 @@ if generate_forecast:
         historical_values.append(trend + seasonal + noise)
     
     # Generate forecasts
-    status_text.text("🤖 Training forecasting models...")
+    status_text.text(" Training forecasting models...")
     progress_bar.progress(60)
     
     forecast_years_list = list(range(2025, 2025 + forecast_years))
@@ -238,7 +238,7 @@ if generate_forecast:
     
     with col1:
         # Main forecast visualization
-        st.markdown("### 📊 Migration Forecast")
+        st.markdown("###  Migration Forecast")
         
         fig = go.Figure()
         
@@ -355,7 +355,7 @@ if generate_forecast:
     
     with col2:
         # Key metrics
-        st.markdown("### 📈 Forecast Summary")
+        st.markdown("###  Forecast Summary")
         
         avg_forecast = np.mean(forecast_data['forecast'])
         uncertainty_range = np.mean([u - l for u, l in zip(forecast_data['upper'], forecast_data['lower'])])
@@ -385,7 +385,7 @@ if generate_forecast:
         """, unsafe_allow_html=True)
         
         # Model selection
-        st.markdown("### 🤖 Model Selection")
+        st.markdown("###  Model Selection")
         selected_model = st.radio(
             "",
             list(forecasts.keys()),
@@ -404,7 +404,7 @@ if generate_forecast:
         """, unsafe_allow_html=True)
         
         # Export options
-        st.markdown("### 📤 Export Data")
+        st.markdown("###  Export Data")
         
         export_df = pd.DataFrame({
             'Year': forecast_years_list,
@@ -426,7 +426,7 @@ if generate_forecast:
     
     # Model comparison if multiple models
     if len(forecasts) > 1:
-        st.markdown("### 🔍 Model Comparison")
+        st.markdown("###  Model Comparison")
         
         comparison_data = []
         for model_name, data in forecasts.items():
@@ -458,7 +458,7 @@ if generate_forecast:
             )
     
     # Forecast table
-    st.markdown("### 📋 Forecast Values")
+    st.markdown("###  Forecast Values")
     forecast_table = pd.DataFrame({
         'Year': forecast_years_list,
         'Forecast': forecast_data['forecast'],
@@ -477,7 +477,7 @@ if generate_forecast:
     )
     
     # Information expander
-    with st.expander("📚 How to interpret these forecasts"):
+    with st.expander(" How to interpret these forecasts"):
         st.markdown("""
         ### Understanding the Forecast
         
@@ -542,7 +542,7 @@ else:
     
     with col2:
         st.markdown("""
-        ### 📊 Sample Forecast
+        ###  Sample Forecast
         """)
         
         # Sample visualization
