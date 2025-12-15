@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 # ==================== PAGE CONFIGURATION ====================
 st.set_page_config(
     page_title="Migration Forecasting Dashboard",
-    page_icon="📈",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -50,15 +50,6 @@ st.markdown("""
         padding: 1rem;
         border-radius: 4px;
         margin: 1rem 0;
-        color: #333 !important;
-    }
-    
-    .info-box strong {
-        color: #2E86AB;
-    }
-    
-    .info-box br {
-        margin-bottom: 0.5rem;
     }
     
     .forecast-chart {
@@ -66,16 +57,6 @@ st.markdown("""
         padding: 1.5rem;
         border-radius: 10px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-    
-    /* Fix for radio button text color */
-    .stRadio > label {
-        color: #333 !important;
-    }
-    
-    /* Fix for metric card text */
-    .metric-card div {
-        color: #333 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -88,14 +69,10 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # ==================== SIDEBAR CONFIGURATION ====================
 with st.sidebar:
-    st.markdown("### ⚙️ Forecast Settings")
-    
-    # Initialize session state for quick start
-    if 'quick_country' not in st.session_state:
-        st.session_state.quick_country = None
+    st.markdown("###  Forecast Settings")
     
     # Country selection with enhanced data
-    st.markdown("**🌍 Select Country**")
+    st.markdown("**Select Country**")
     countries = {
         "🇺🇸 United States": {"code": "USA", "trend": "↑", "volatility": "Low"},
         "🇩🇪 Germany": {"code": "DEU", "trend": "↑", "volatility": "Medium"},
@@ -105,15 +82,9 @@ with st.sidebar:
         "🇧🇷 Brazil": {"code": "BRA", "trend": "↓", "volatility": "Medium"},
     }
     
-    # Check if quick start button was clicked
-    default_index = 0
-    if st.session_state.quick_country in countries:
-        default_index = list(countries.keys()).index(st.session_state.quick_country)
-    
     selected_country_display = st.selectbox(
         "", 
         list(countries.keys()),
-        index=default_index,
         label_visibility="collapsed"
     )
     selected_country = countries[selected_country_display]
@@ -129,7 +100,7 @@ with st.sidebar:
     )
     
     # Model selection
-    st.markdown("**🤖 Select Models**")
+    st.markdown("** Select Models**")
     col1, col2 = st.columns(2)
     with col1:
         use_prophet = st.checkbox("Prophet", value=True)
@@ -138,43 +109,29 @@ with st.sidebar:
     use_ensemble = st.checkbox("Ensemble", value=True)
     
     # Advanced settings in expander
-    with st.expander("⚙️ Advanced Settings"):
+    with st.expander(" Advanced Settings"):
         show_uncertainty = st.checkbox("Show Uncertainty Bands", value=True)
         scenario_adjustment = st.slider("Scenario Adjustment (%)", -30, 30, 0, 5)
     
     st.markdown("---")
-    
-    # Create two columns for the buttons
-    col_gen, col_reset = st.columns([3, 1])
-    with col_gen:
-        generate_forecast = st.button("🚀 Generate Forecast", type="primary", use_container_width=True)
-    with col_reset:
-        if st.button("🔄 Reset", use_container_width=True):
-            st.session_state.quick_country = None
-            st.rerun()
+    generate_forecast = st.button(" Generate Forecast", type="primary", use_container_width=True)
     
     # Info section
-    st.markdown("---")
-    st.markdown("""
-    <div style="font-size: 0.85rem; color: #666;">
-    <strong>Model Information:</strong><br>
-    • <strong>Prophet</strong>: Facebook's time series model<br>
-    • <strong>ARIMA</strong>: Statistical time series model<br>
-    • <strong>Ensemble</strong>: Weighted average of models
-    </div>
-    """, unsafe_allow_html=True)
+    st.caption("""
+    **Model Information:**
+    - **Prophet**: Facebook's time series model
+    - **ARIMA**: Statistical time series model
+    - **Ensemble**: Weighted average of selected models
+    """)
 
 # ==================== FORECAST GENERATION ====================
-# Check if we should generate forecast (either from button or quick start)
-should_generate = generate_forecast or (st.session_state.quick_country and st.session_state.quick_country in countries)
-
-if should_generate:
+if generate_forecast:
     # Progress indicators
     progress_bar = st.progress(0)
     status_text = st.empty()
     
     # Simulate data loading
-    status_text.text("📊 Loading historical data...")
+    status_text.text("Loading historical data...")
     progress_bar.progress(25)
     
     # Generate realistic historical data
@@ -199,7 +156,7 @@ if should_generate:
         historical_values.append(trend + seasonal + noise)
     
     # Generate forecasts
-    status_text.text("🤖 Training forecasting models...")
+    status_text.text(" Training forecasting models...")
     progress_bar.progress(60)
     
     forecast_years_list = list(range(2025, 2025 + forecast_years))
@@ -271,10 +228,6 @@ if should_generate:
     progress_bar.empty()
     status_text.empty()
     
-    # Clear quick start after use
-    if st.session_state.quick_country:
-        st.session_state.quick_country = None
-    
     # ==================== MAIN DASHBOARD LAYOUT ====================
     # Use selected model (default to Ensemble if available)
     selected_model = 'Ensemble' if 'Ensemble' in forecasts else list(forecasts.keys())[0]
@@ -285,7 +238,7 @@ if should_generate:
     
     with col1:
         # Main forecast visualization
-        st.markdown("### 📊 Migration Forecast")
+        st.markdown("###  Migration Forecast")
         
         fig = go.Figure()
         
@@ -402,7 +355,7 @@ if should_generate:
     
     with col2:
         # Key metrics
-        st.markdown("### 📈 Forecast Summary")
+        st.markdown("###  Forecast Summary")
         
         avg_forecast = np.mean(forecast_data['forecast'])
         uncertainty_range = np.mean([u - l for u, l in zip(forecast_data['upper'], forecast_data['lower'])])
@@ -424,21 +377,20 @@ if should_generate:
         </div>
         """, unsafe_allow_html=True)
         
-        trend_color = "#28a745" if trend_pct > 0 else "#dc3545"
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-label">{forecast_years}-Year Trend</div>
-            <div class="metric-value" style="color: {trend_color}">{trend_pct:+.1f}%</div>
+            <div class="metric-value">{trend_pct:+.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
         
         # Model selection
-        st.markdown("### 🤖 Model Selection")
+        st.markdown("###  Model Selection")
         selected_model = st.radio(
-            "Select forecasting model:",
+            "",
             list(forecasts.keys()),
             index=list(forecasts.keys()).index('Ensemble') if 'Ensemble' in forecasts else 0,
-            label_visibility="visible"
+            label_visibility="collapsed"
         )
         
         # Model info
@@ -452,7 +404,7 @@ if should_generate:
         """, unsafe_allow_html=True)
         
         # Export options
-        st.markdown("### 📤 Export Data")
+        st.markdown("###  Export Data")
         
         export_df = pd.DataFrame({
             'Year': forecast_years_list,
@@ -463,27 +415,18 @@ if should_generate:
         
         csv = export_df.to_csv(index=False)
         st.download_button(
-            label="📥 Download CSV",
+            label="Download CSV",
             data=csv,
             file_name=f"migration_forecast_{selected_country['code']}.csv",
-            mime="text/csv",
-            use_container_width=True
+            mime="text/csv"
         )
-        
-        # Show quick tip
-        st.markdown(f"""
-        <div class="info-box">
-            <strong>💡 Quick Tip</strong><br>
-            Use the <strong>Scenario Adjustment</strong> slider in Advanced Settings to test "what-if" scenarios.
-        </div>
-        """, unsafe_allow_html=True)
     
     # ==================== BOTTOM SECTION ====================
     st.markdown("---")
     
     # Model comparison if multiple models
     if len(forecasts) > 1:
-        st.markdown("### 🔍 Model Comparison")
+        st.markdown("###  Model Comparison")
         
         comparison_data = []
         for model_name, data in forecasts.items():
@@ -515,7 +458,7 @@ if should_generate:
             )
     
     # Forecast table
-    st.markdown("### 📋 Forecast Values")
+    st.markdown("###  Forecast Values")
     forecast_table = pd.DataFrame({
         'Year': forecast_years_list,
         'Forecast': forecast_data['forecast'],
@@ -534,7 +477,7 @@ if should_generate:
     )
     
     # Information expander
-    with st.expander("📚 How to interpret these forecasts"):
+    with st.expander(" How to interpret these forecasts"):
         st.markdown("""
         ### Understanding the Forecast
         
@@ -588,21 +531,18 @@ else:
         # Quick forecast buttons
         cols = st.columns(3)
         with cols[0]:
-            if st.button("🇺🇸 Forecast USA", use_container_width=True, type="secondary"):
+            if st.button("🇺🇸 Forecast USA", use_container_width=True):
                 st.session_state.quick_country = "🇺🇸 United States"
-                st.rerun()
         with cols[1]:
-            if st.button("🇩🇪 Forecast Germany", use_container_width=True, type="secondary"):
+            if st.button("🇩🇪 Forecast Germany", use_container_width=True):
                 st.session_state.quick_country = "🇩🇪 Germany"
-                st.rerun()
         with cols[2]:
-            if st.button("🇮🇳 Forecast India", use_container_width=True, type="secondary"):
+            if st.button("🇮🇳 Forecast India", use_container_width=True):
                 st.session_state.quick_country = "🇮🇳 India"
-                st.rerun()
     
     with col2:
         st.markdown("""
-        ### 📊 Sample Forecast
+        ###  Sample Forecast
         """)
         
         # Sample visualization
@@ -628,8 +568,7 @@ else:
         fig.update_layout(
             height=300,
             showlegend=False,
-            margin=dict(l=20, r=20, t=20, b=20),
-            plot_bgcolor='white'
+            margin=dict(l=20, r=20, t=20, b=20)
         )
         
         st.plotly_chart(fig, use_container_width=True)
