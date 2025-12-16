@@ -12,8 +12,7 @@ This project addresses the challenge of working with heterogeneous global demogr
 ##  Live Application
 
 **Access the live dashboard here:**  
-👉 [https://yaw-assensoh-global-migration-analysis-project-app-tbxmqx.streamlit.app](https://yaw-assensoh-global-migration-analysis-project-app-tbxmqx.streamlit.app)
-
+👉 [https://yaw-assensoh-global-migration-analysis-project-app-tbxmqx.streamlit.app]
 
 ### Key Components
 - **`cleaned_migration_data.csv`**: Standardized migration statistics for 233 countries

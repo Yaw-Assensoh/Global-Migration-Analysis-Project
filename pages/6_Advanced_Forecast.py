@@ -129,7 +129,7 @@ with st.sidebar:
     )
     
     # Model selection
-    st.markdown("**🤖 Select Models**")
+    st.markdown("** Select Models**")
     col1, col2 = st.columns(2)
     with col1:
         use_prophet = st.checkbox("Prophet", value=True)
@@ -147,7 +147,7 @@ with st.sidebar:
     # Create two columns for the buttons
     col_gen, col_reset = st.columns([3, 1])
     with col_gen:
-        generate_forecast = st.button("🚀 Generate Forecast", type="primary", use_container_width=True)
+        generate_forecast = st.button(" Generate Forecast", type="primary", use_container_width=True)
     with col_reset:
         if st.button("🔄 Reset", use_container_width=True):
             st.session_state.quick_country = None
@@ -174,7 +174,7 @@ if should_generate:
     status_text = st.empty()
     
     # Simulate data loading
-    status_text.text("📊 Loading historical data...")
+    status_text.text(" Loading historical data...")
     progress_bar.progress(25)
     
     # Generate realistic historical data
@@ -199,7 +199,7 @@ if should_generate:
         historical_values.append(trend + seasonal + noise)
     
     # Generate forecasts
-    status_text.text("🤖 Training forecasting models...")
+    status_text.text(" Training forecasting models...")
     progress_bar.progress(60)
     
     forecast_years_list = list(range(2025, 2025 + forecast_years))
@@ -285,7 +285,7 @@ if should_generate:
     
     with col1:
         # Main forecast visualization
-        st.markdown("### 📊 Migration Forecast")
+        st.markdown("###  Migration Forecast")
         
         fig = go.Figure()
         
@@ -365,7 +365,7 @@ if should_generate:
         
         # Scenario analysis
         if scenario_adjustment != 0:
-            st.markdown("### 🎭 Scenario Analysis")
+            st.markdown("###  Scenario Analysis")
             
             scenario_factor = 1 + (scenario_adjustment / 100)
             scenario_forecast = [f * scenario_factor for f in forecast_data['forecast']]
@@ -402,7 +402,7 @@ if should_generate:
     
     with col2:
         # Key metrics
-        st.markdown("### 📈 Forecast Summary")
+        st.markdown("###  Forecast Summary")
         
         avg_forecast = np.mean(forecast_data['forecast'])
         uncertainty_range = np.mean([u - l for u, l in zip(forecast_data['upper'], forecast_data['lower'])])
@@ -433,7 +433,7 @@ if should_generate:
         """, unsafe_allow_html=True)
         
         # Model selection
-        st.markdown("### 🤖 Model Selection")
+        st.markdown("###  Model Selection")
         selected_model = st.radio(
             "Select forecasting model:",
             list(forecasts.keys()),
@@ -483,7 +483,7 @@ if should_generate:
     
     # Model comparison if multiple models
     if len(forecasts) > 1:
-        st.markdown("### 🔍 Model Comparison")
+        st.markdown("###  Model Comparison")
         
         comparison_data = []
         for model_name, data in forecasts.items():
@@ -515,7 +515,7 @@ if should_generate:
             )
     
     # Forecast table
-    st.markdown("### 📋 Forecast Values")
+    st.markdown("###  Forecast Values")
     forecast_table = pd.DataFrame({
         'Year': forecast_years_list,
         'Forecast': forecast_data['forecast'],
@@ -534,7 +534,7 @@ if should_generate:
     )
     
     # Information expander
-    with st.expander("📚 How to interpret these forecasts"):
+    with st.expander(" How to interpret these forecasts"):
         st.markdown("""
         ### Understanding the Forecast
         
@@ -602,7 +602,7 @@ else:
     
     with col2:
         st.markdown("""
-        ### 📊 Sample Forecast
+        ###  Sample Forecast
         """)
         
         # Sample visualization
